@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lista de Compras Premium</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    :root {
+      --primary: #6c5ce7;
+      --primary-dark: #5649c0;
+      --secondary: #00cec9;
+      --success: #00b894;
+      --danger: #d63031;
+      --warning: #fdcb6e;
+      --light: #f5f6fa;
+      --dark: #2d3436;
+      --text: #636e72;
+      --card-bg: #ffffff;
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      --radius: 16px;
+      --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    /* Tela de Introdução */
+    .initial-screen {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    }
+
+    .intro-box {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 40px 30px;
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+      box-shadow: var(--shadow);
+      transform: translateY(0);
+      animation: float 4s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .intro-box h1 {
+      color: var(--primary);
+      font-size: 2.2rem;
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+
+    .intro-box p {
+      color: var(--text);
+      margin-bottom: 30px;
+      font-size: 1rem;
+    }
+
+    .creator {
+      display: inline-block;
+      background: var(--light);
+      padding: 5px 15px;
+      border-radius: 50px;
+      font-weight: 500;
+      color: var(--primary-dark);
+      margin-top: 10px;
+      font-size: 0.9rem;
+    }
+
+    .start-button {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(108, 92, 231, 0.4);
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      max-width: 250px;
+      margin: 0 auto;
+    }
+
+    .start-button:hover {
+      background: var(--primary-dark);
+      transform: translateY(-3px);
+      box-shadow: 0 12px 25px rgba(108, 92, 231, 0.5);
+    }
+
+    /* App Principal */
+    .container {
+      display: none;
+      width: 100%;
+      max-width: 450px;
+      margin: 0 auto;
+      padding: 20px;
+      min-height: 100vh;
+    }
+
+    .app-header {
+      text-align: center;
+      margin-bottom: 25px;
+      position: relative;
+    }
+
+    .app-header h1 {
+      color: var(--primary);
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 5px;
+    }
+
+    .app-header p {
+      color: var(--text);
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+
+    .back-button {
+      position: absolute;
+      left: 0;
+      top: 5px;
+      background: var(--light);
+      border: none;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .back-button:hover {
+      background: var(--primary);
+      color: white;
+    }
+
+    /* Card de Resumo */
+    .summary-card {
+      background: white;
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 25px;
+      box-shadow: var(--shadow);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: var(--transition);
+    }
+
+    .summary-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .summary-item {
+      text-align: center;
+      flex: 1;
+    }
+
+    .summary-label {
+      font-size: 0.8rem;
+      color: var(--text);
+      opacity: 0.7;
+      margin-bottom: 5px;
+    }
+
+    .summary-value {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .summary-value.remaining {
+      color: var(--success);
+    }
+
+    .summary-value.negative {
+      color: var(--danger);
+    }
+
+    /* Formulário */
+    .form-card {
+      background: white;
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 25px;
+      box-shadow: var(--shadow);
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 0.9rem;
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 12px 15px;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      font-size: 1rem;
+      transition: var(--transition);
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .form-control:focus {
+      border-color: var(--primary);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.2);
+    }
+
+    .form-row {
+      display: flex;
+      gap: 15px;
+    }
+
+    .form-row .form-group {
+      flex: 1;
+    }
+
+    .add-button {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 15px;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: var(--transition);
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .add-button:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+    }
+
+    /* Lista de Itens */
+    .items-container {
+      background: white;
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+      margin-bottom: 80px;
+    }
+
+    .items-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .items-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--primary);
+    }
+
+    .items-count {
+      background: var(--light);
+      color: var(--primary);
+      padding: 5px 10px;
+      border-radius: 50px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .item-list {
+      list-style: none;
+    }
+
+    .item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 0;
+      border-bottom: 1px solid #f0f0f0;
+      transition: var(--transition);
+    }
+
+    .item:last-child {
+      border-bottom: none;
+    }
+
+    .item:hover {
+      transform: translateX(5px);
+    }
+
+    .item-info {
+      flex: 1;
+    }
+
+    .item-name {
+      font-weight: 500;
+      color: var(--dark);
+      margin-bottom: 5px;
+    }
+
+    .item-details {
+      display: flex;
+      gap: 10px;
+      font-size: 0.85rem;
+      color: var(--text);
+    }
+
+    .item-price {
+      font-weight: 600;
+      color: var(--primary);
+    }
+
+    .item-total {
+      font-weight: 700;
+      color: var(--dark);
+      min-width: 80px;
+      text-align: right;
+    }
+
+    .item-actions {
+      display: flex;
+      gap: 8px;
+      margin-left: 15px;
+    }
+
+    .action-button {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .edit-button {
+      background: var(--light);
+      color: var(--primary);
+    }
+
+    .edit-button:hover {
+      background: var(--primary);
+      color: white;
+    }
+
+    .delete-button {
+      background: var(--light);
+      color: var(--danger);
+    }
+
+    .delete-button:hover {
+      background: var(--danger);
+      color: white;
+    }
+
+    /* Botão Flutuante */
+    .floating-button {
+      position: fixed;
+      bottom: 25px;
+      right: 25px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 56px;
+      height: 56px;
+      font-size: 1.2rem;
+      box-shadow: 0 8px 25px rgba(108, 92, 231, 0.4);
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+    }
+
+    .floating-button:hover {
+      background: var(--primary-dark);
+      transform: translateY(-5px) scale(1.1);
+    }
+
+    /* Notificação */
+    .notification {
+      position: fixed;
+      bottom: 25px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--dark);
+      color: white;
+      padding: 12px 25px;
+      border-radius: 50px;
+      font-size: 0.9rem;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      opacity: 0;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 1000;
+    }
+
+    .notification.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .notification.success {
+      background: var(--success);
+    }
+
+    .notification.error {
+      background: var(--danger);
+    }
+
+    .notification.warning {
+      background: var(--warning);
+      color: var(--dark);
+    }
+
+    /* Responsividade */
+    @media (max-width: 480px) {
+      .intro-box {
+        padding: 30px 20px;
+      }
+      
+      .form-row {
+        flex-direction: column;
+        gap: 0;
+      }
+      
+      .item-actions {
+        margin-left: 10px;
+      }
+    }
+
+    /* Animações */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(-20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .fade-in {
+      animation: fadeIn 0.4s ease-out forwards;
+    }
+
+    .slide-in {
+      animation: slideIn 0.3s ease-out forwards;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TELA INICIAL -->
+  <div class="initial-screen" id="initialScreen">
+    <div class="intro-box">
+      <h1>Lista de Compras</h1>
+      <p>Organize suas compras de forma inteligente e mantenha o controle dos seus gastos</p>
+      <span class="creator">por Jonathan Felix</span>
+      <button class="start-button" onclick="startApp()">
+        <i class="fas fa-play"></i> Começar Agora
+      </button>
+    </div>
+  </div>
+
+  <!-- APP PRINCIPAL -->
+  <div class="container" id="mainScreen">
+    <div class="app-header">
+      <button class="back-button" onclick="backToIntro()">
+        <i class="fas fa-arrow-left"></i>
+      </button>
+      <h1>Minha Lista</h1>
+      <p>Controle seus gastos de forma simples</p>
+    </div>
+
+    <!-- Resumo -->
+    <div class="summary-card fade-in">
+      <div class="summary-item">
+        <div class="summary-label">Total</div>
+        <div class="summary-value" id="totalDisplay">R$ 0.00</div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-label">Restante</div>
+        <div class="summary-value remaining" id="remainingDisplay">R$ 0.00</div>
+      </div>
+    </div>
+
+    <!-- Formulário -->
+    <div class="form-card fade-in">
+      <div class="form-group">
+        <label for="initialValue">Limite de Gastos</label>
+        <input type="number" class="form-control" id="initialValue" placeholder="Ex: 500.00" min="0" step="0.01" />
+      </div>
+
+      <form id="itemForm">
+        <div class="form-group">
+          <label for="itemName">Nome do Item</label>
+          <input type="text" class="form-control" id="itemName" placeholder="Ex: Arroz" required />
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="itemValue">Preço Unitário</label>
+            <input type="number" class="form-control" id="itemValue" placeholder="R$ 0.00" min="0" step="0.01" required />
+          </div>
+          <div class="form-group">
+            <label for="itemQuantity">Quantidade</label>
+            <input type="number" class="form-control" id="itemQuantity" placeholder="Qtd." min="1" value="1" required />
+          </div>
+        </div>
+        
+        <button type="submit" class="add-button">
+          <i class="fas fa-plus"></i> Adicionar Item
+        </button>
+      </form>
+    </div>
+
+    <!-- Lista de Itens -->
+    <div class="items-container fade-in">
+      <div class="items-header">
+        <div class="items-title">Itens Adicionados</div>
+        <div class="items-count" id="itemsCount">0 itens</div>
+      </div>
+      
+      <ul class="item-list" id="itemList">
+        <!-- Itens serão adicionados aqui dinamicamente -->
+      </ul>
+    </div>
+
+    <!-- Botão Flutuante -->
+    <button class="floating-button" onclick="scrollToTop()">
+      <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Notificação -->
+    <div class="notification" id="notification"></div>
+  </div>
+
+  <!-- JS -->
+  <script>
+    // Elementos DOM
+    const initialScreen = document.getElementById('initialScreen');
+    const mainScreen = document.getElementById('mainScreen');
+    const itemForm = document.getElementById('itemForm');
+    const itemList = document.getElementById('itemList');
+    const totalDisplay = document.getElementById('totalDisplay');
+    const remainingDisplay = document.getElementById('remainingDisplay');
+    const initialValueInput = document.getElementById('initialValue');
+    const notification = document.getElementById('notification');
+    const itemsCount = document.getElementById('itemsCount');
+
+    // Variáveis de estado
+    let total = 0;
+    let initialValue = 0;
+    let items = [];
+
+    // Iniciar o app
+    function startApp() {
+      initialScreen.style.display = 'none';
+      mainScreen.style.display = 'block';
+      document.body.style.background = '#f5f7fa';
+    }
+
+    // Voltar para a tela inicial
+    function backToIntro() {
+      mainScreen.style.display = 'none';
+      initialScreen.style.display = 'flex';
+      document.body.style.background = 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)';
+    }
+
+    // Mostrar notificação
+    function showNotification(message, type = 'success') {
+      notification.textContent = message;
+      notification.className = `notification ${type} show`;
+      
+      setTimeout(() => {
+        notification.classList.remove('show');
+      }, 3000);
+    }
+
+    // Adicionar item
+    itemForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      
+      const itemName = document.getElementById('itemName').value;
+      const itemValue = parseFloat(document.getElementById('itemValue').value);
+      const itemQuantity = parseInt(document.getElementById('itemQuantity').value);
+      const itemTotal = itemValue * itemQuantity;
+      
+      // Criar objeto do item
+      const item = {
+        id: Date.now(),
+        name: itemName,
+        value: itemValue,
+        quantity: itemQuantity,
+        total: itemTotal
+      };
+      
+      // Adicionar ao array e atualizar total
+      items.push(item);
+      total += itemTotal;
+      
+      // Renderizar item na lista
+      renderItem(item);
+      
+      // Atualizar totais e contador
+      updateTotals();
+      updateItemsCount();
+      
+      // Resetar formulário e mostrar notificação
+      itemForm.reset();
+      document.getElementById('itemName').focus();
+      showNotification("Item adicionado com sucesso!", "success");
+    });
+
+    // Renderizar item na lista
+    function renderItem(item) {
+      const listItem = document.createElement('li');
+      listItem.className = 'item slide-in';
+      listItem.dataset.id = item.id;
+      
+      listItem.innerHTML = `
+        <div class="item-info">
+          <div class="item-name">${item.name}</div>
+          <div class="item-details">
+            <span class="item-price">R$ ${item.value.toFixed(2)}</span>
+            <span>× ${item.quantity}</span>
+          </div>
+        </div>
+        <div class="item-total">R$ ${item.total.toFixed(2)}</div>
+        <div class="item-actions">
+          <button class="action-button edit-button" onclick="editItem(${item.id})">
+            <i class="fas fa-pen"></i>
+          </button>
+          <button class="action-button delete-button" onclick="removeItem(${item.id})">
+            <i class="fas fa-trash"></i>
+          </button>
+        </div>
+      `;
+      
+      itemList.appendChild(listItem);
+    }
+
+    // Remover item
+    function removeItem(id) {
+      const itemIndex = items.findIndex(item => item.id === id);
+      if (itemIndex === -1) return;
+      
+      const item = items[itemIndex];
+      total -= item.total;
+      items.splice(itemIndex, 1);
+      
+      // Remover do DOM
+      document.querySelector(`.item[data-id="${id}"]`).remove();
+      
+      // Atualizar totais e contador
+      updateTotals();
+      updateItemsCount();
+      showNotification("Item removido da lista", "error");
+    }
+
+    // Editar item (implementação básica - pode ser expandida)
+    function editItem(id) {
+      const item = items.find(item => item.id === id);
+      if (!item) return;
+      
+      document.getElementById('itemName').value = item.name;
+      document.getElementById('itemValue').value = item.value;
+      document.getElementById('itemQuantity').value = item.quantity;
+      
+      // Remover o item original
+      removeItem(id);
+      
+      // Focar no campo de nome
+      document.getElementById('itemName').focus();
+      showNotification("Item pronto para edição", "warning");
+    }
+
+    // Atualizar totais
+    function updateTotals() {
+      initialValue = parseFloat(initialValueInput.value) || 0;
+      const remaining = initialValue - total;
+      
+      // Atualizar displays
+      totalDisplay.textContent = `R$ ${total.toFixed(2)}`;
+      remainingDisplay.textContent = `R$ ${Math.abs(remaining).toFixed(2)}`;
+      
+      // Ajustar cor do saldo restante
+      if (remaining < 0) {
+        remainingDisplay.classList.add('negative');
+        remainingDisplay.classList.remove('remaining');
+      } else {
+        remainingDisplay.classList.add('remaining');
+        remainingDisplay.classList.remove('negative');
+      }
+    }
+
+    // Atualizar contador de itens
+    function updateItemsCount() {
+      const count = items.length;
+      itemsCount.textContent = `${count} ${count === 1 ? 'item' : 'itens'}`;
+    }
+
+    // Rolagem para o topo
+    function scrollToTop() {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    }
+
+    // Event listeners
+    initialValueInput.addEventListener('input', updateTotals);
+  </script>
+</body>
+</html>
